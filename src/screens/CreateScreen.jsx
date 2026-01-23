@@ -6,6 +6,7 @@ const CreateScreen = () => {
     <View>
       <Text>CreateScreen</Text>
     </View>
+    
   )
 }
 
