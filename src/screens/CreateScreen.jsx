@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { TextInput } from 'react-native/types_generated/index'
 
 
@@ -7,6 +7,8 @@ import { TextInput } from 'react-native/types_generated/index'
 const CreateScreen = ({data,setdata}) => {
   const [itemName, setItemName] = useState('');
   const [stock, setStock] = useState('');
+  const [isEdit, setisEdit] = useState(false)
+  const [editItemId, seteditItemId] = useState(second)
 
   const handlerAddItem = () => {
   //function to add item in stock
@@ -20,7 +22,32 @@ const CreateScreen = ({data,setdata}) => {
     setdata([...data, newItem]);
     setItemName('');
     setStock('');
+    setisEdit(false);
   };
+
+  const deleteItemHandler = (id) => {
+    const updatedData = data.filter((item) => item.id !== id);
+    setdata(updatedData);
+  }
+
+  const editItemHandler = (item) => {
+    setisEdit(true);
+    setItemName(item.name);
+    setStock(item.stock.toString());
+    seteditItemId(item.id);
+
+  const updateItemHandler = () => {
+    const updatedData = data.map((item) => {
+      if (item.id === editItemId) {
+        return { ...item, name: itemName, stock: stock };
+      }
+      return item;
+    });
+    setdata(updatedData);
+    setisEdit(false);
+    setItemName('');
+    setStock('');
+  }
 
   return (
     <View style={styles.container}>
@@ -36,8 +63,8 @@ const CreateScreen = ({data,setdata}) => {
         value={stock}
         onChangeText={(stock) => setStock(stock)}
       />
-      <Pressable style={styles.button} onPress={() => handlerAddItem()}>
-        <Text style={styles.buttonText}>Add Item In Stock</Text>
+      <Pressable style={styles.button} onPress={() => isEdit ? updateItemHandler() : handlerAddItem()}>
+        <Text style={styles.buttonText}>{isEdit ? `Edit Item In Stock` : `Add Item In Stock`}</Text>
       </Pressable>
       <View style={{ marginTop: 10 }}>
         <Text style={styles.headingText}> All Items In Stock</Text>
@@ -47,10 +74,14 @@ const CreateScreen = ({data,setdata}) => {
           renderItem={({ item }) => (
             <View style={[styles.itemContainer, { backgroundColor: item.stock < 20 ? '#ffcccc' : '#D7F6BF' }]}>
               <Text style={styles.itemText}>{item.name}</Text>
-              <Text style={styles.itemText}>{item.stock}</Text>
               <View style={{ flexDirection: 'row', gap: 10 }}>
-                <Text style={styles.itemText}>Edit</Text>
-                <Text style={styles.itemText}>Delete</Text>
+              <Text style={styles.itemText}>{item.stock}</Text>
+                <Pressable onPress={() => editItemHandler(item)}>
+                  <Text style={styles.itemText}>Edit</Text>
+                </Pressable>
+                <Pressable onPress={() => deleteItemHandler(item.id)}>
+                  <Text style={styles.itemText}>Delete</Text>
+                </Pressable>
               </View>
             </View>
           )}
