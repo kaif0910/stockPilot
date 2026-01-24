@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import CreateScreen from './CreateScreen';
-import AllItems from './AllItems';
+import CreateScreen from '../screens/createScreen';
+import AllItems from '../screens/AllItems';
 
-const data = [ //array of objects raw data
+
+
+const HomeScreen = () => {
+    const [view, setView] = useState(0);
+    const [data, setdata] = useState([ //array of objects raw data
     {id: 1, name: "wheat", stock: 5 , unit: "kg"},
     {id: 2, name: "rice", stock: 2, unit: "kg"},
     {id: 3, name: "Basmati rice", stock: 25 , unit: "kg"},
     {id: 4, name: "Pulse", stock: 1, unit: "kg"},
     {id: 5, name: "Corn", stock: 30, unit: "kg"},  
-]
-
-const HomeScreen = () => {
-    const [view, setView] = useState(0);
+])
 
     return (
         <View style={styles.container}>
@@ -30,7 +31,7 @@ const HomeScreen = () => {
             </View>
             {view === 0 && <AllItems data={data} />}
             {view === 1 && <AllItems data={data.filter(item => item.stock < 20)} />}
-            {view === 2 && <CreateScreen />}
+            {view === 2 && <CreateScreen data={data} setdata={setdata} />}
         </View>
     );
 };
